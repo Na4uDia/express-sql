@@ -1,50 +1,69 @@
-
-app.get('/comments', (request, response) => {
-    db.all(`SELECT id, content, article_id FROM comments`, [], (err, rows) => {
+app.get("/comments", (request, response) => {
+  db.query(
+    `SELECT id, content, article_id FROM comments`,
+    [],
+    (err, rows, fields) => {
       if (err) {
         response.status(400).send(err);
-      }else{
+      } else {
         response.send(rows);
       }
-    });
- });
-
-
-  app.delete('/comments', (request, response) => {
-    const data = request.query;
-    if (data.id){
-      db.run(`DELETE FROM comments WHERE id=?`, [data.id], function(err) {
-        if (err) {
-          response.status(400).send({error: 'Unable to delete comment ' + err});
-        }else {
-          response.send({status: 'Deleted'});
-        }
-      });
     }
-  });
+  );
+});
 
-
-  app.post('/comments', (request, response) => {
-    const data = request.query;
-    if (data.article_id && data.content){
-      if (data.id){
-        db.run(`UPDATE comments SET article_id = ?, content = ? WHERE id = ?`, [data.article_id, data.content, data.id], function(err) {
-          if (err) {
-            response.status(400).send({error: 'Unable to update comments ' + err});
-          } else {
-            response.send({status: 'Updated'});
-          }
-        });
-      }else{
-        db.run(`INSERT INTO comments (content, article_id) VALUES(?, ?)`, [data.article_id, data.content], function(err) {
-          if (err) {
-            response.status(400).send({error: 'Unable to save new comment'});
-          }else {
-            response.send({status: 'Added comment'});
-          }
-        });
+app.delete("/comments", (request, response) => {
+  const data = request.query;
+  if (data.id) {
+    db.query(`DELETE FROM comments WHERE id=?`, [data.id], function(
+      err,
+      rows,
+      fields
+    ) {
+      if (err) {
+        response.status(400).send({ error: "Unable to delete comment " + err });
+      } else {
+        response.send({ status: "Deleted" });
       }
-    }else{
-      response.status(400).send({error: 'article_id and content are required fields'});
+    });
+  }
+});
+
+app.post("/comments", (request, response) => {
+  const data = request.query;
+  if (data.content && data.article_id) {
+    if (data.id) {
+      db.query(
+        `UPDATE comments SET  content = ?, article_id = ? WHERE id = ?`,
+        [data.content, data.article_id, data.id],
+        function(err, rows, fields) {
+          if (err) {
+            response
+              .status(400)
+              .send({ error: "Unable to update comments " + err });
+          } else {
+            response.send({ status: "Updated" });
+          }
+        }
+      );
+    } else {
+      db.query(
+        `INSERT INTO comments VALUES(?, ?, ?)`,
+        [null, data.content, data.article_id],
+        function(err, rows, fields) {
+          if (err) {
+            response
+              .status(400)
+              .send({ error: "Unable to save new comment " + err });
+          } else {
+            response.send({ status: "Comment is added" });
+          }
+        }
+      );
     }
-  });
+  } else {
+    response
+      .status(400)
+      .send({ error: "Content and article_id are required fields " + err });
+  }
+});
