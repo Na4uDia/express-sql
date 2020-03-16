@@ -1,3 +1,32 @@
+var config = require("../token-config.js");
+var jwt = require("jsonwebtoken");
+
+app.use("/articles", function(request, response, next) {
+  const data = request.query;
+  var token = data.access_token;
+  if (!token)
+    return response
+      .status(401)
+      .send({ auth: false, message: "No token provided." });
+  jwt.verify(token, config.secret, function(err, decoded) {
+    if (err)
+      return response
+        .status(500)
+        .send({ auth: false, message: "Failed to authenticate token." });
+    db.query(
+      "SELECT * FROM users where id=? AND pass=?",
+      [decoded.id, decoded.pass],
+      function(err, rows, fields) {
+        if (err) {
+          response.status(400).send(err);
+        } else {
+          next();
+        }
+      }
+    );
+  });
+});
+
 app.get("/articles", (request, response) => {
   db.query("SELECT id, title, body FROM articles", function(err, rows, fields) {
     if (err) {
@@ -56,6 +85,6 @@ app.post("/articles", (request, response) => {
       );
     }
   } else {
-    response.status(400).send({ error: "Title and body are required fields" });
+    response.status(400).send({ error: "title and body are required fields" });
   }
 });
