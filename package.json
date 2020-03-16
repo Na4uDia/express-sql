@@ -1,10 +1,9 @@
 {
   "name": "express-sqlight",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,7 +11,23 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1"
-  }
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Na4uDia/express-sqlite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Na4uDia/express-sqlite/issues"
+  },
+  "homepage": "https://github.com/Na4uDia/express-sqlite#readme",
+  "description": ""
 }
