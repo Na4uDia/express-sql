@@ -1,5 +1,5 @@
 const tokenUtils = require('./auth/token-utils');
-const commentsDac = require('../dac/comments');
+const commentsDac = require('../dac/comments-query');
 
 app.get('/comments', (request, response) => {
   tokenUtils.getDecodedToken(request)
